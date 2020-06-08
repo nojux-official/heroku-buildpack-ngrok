@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+function say {
+  echo "       $*"
+}
+function topic {
+  echo "-----> $*"
+}
+
+BP_DIR="$(cd "$(dirname "$0")"/.. && pwd)"
+
+topic Installing ngrok
+curl --silent -o ngrok.zip -L "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip" 
+mkdir -p $1/bin
+unzip ngrok.zip -d $1/bin > /dev/null 2>&1
+
+topic Writing ngrok scripts
+start_script=$1/bin/${NGROK_WRAPPER_SCRIPT_NAME:-'start_ngrok.sh'}
+say $start_script
+mkdir -p $1/bin
+cat <<EOF > $start_script
+#!/usr/bin/env bash
+
+ngrok tcp -authtoken $NGROK_API_TOKEN -log stdout --log-level debug ${NGROK_OPTS} ${NGROK_PORT:-$PORT} > $HOME/ngrok.log
+EOF
+chmod +x $start_script
+
+get_ip_script=$1/bin/${NGROK_GET_IP_SCRIPT_NAME:-'get_ip_ngrok.sh'}
+say $get_ip_script
+cat <<EOF > $get_ip_script
+#!/usr/bin/env bash
+
+TEXT=$(cat $HOME/ngrok.log)
+TEXT=${TEXT#*[Addr:}
+TEXT=${TEXT%%]*}
+echo $TEXT
+EOF
+chmod +x $get_ip_script
+
+topic Writing ngrok profile script
+mkdir -p $1/.profile.d
+cat <<EOF > $1/.profile.d/000_ngrok.sh
+#!/usr/bin/env bash
+
+#export PATH=$PATH:$HOME/bin
+alias ngrok=$HOME/bin/ngrok
+EOF
