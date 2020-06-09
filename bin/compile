@@ -22,7 +22,7 @@ mkdir -p $1/bin
 cat <<EOF > $start_script
 #!/usr/bin/env bash
 
-ngrok tcp -authtoken $NGROK_API_TOKEN -log stdout --log-level debug ${NGROK_OPTS} ${NGROK_PORT:-$PORT} > $HOME/ngrok.log
+ngrok tcp -authtoken \$NGROK_API_TOKEN -log stdout --log-level debug \${NGROK_OPTS} \${NGROK_PORT:-\$PORT} > \$HOME/ngrok.log
 EOF
 chmod +x $start_script
 
@@ -31,10 +31,10 @@ say $get_ip_script
 cat <<EOF > $get_ip_script
 #!/usr/bin/env bash
 
-TEXT=$(cat $HOME/ngrok.log)
-TEXT=${TEXT#*[Addr:}
-TEXT=${TEXT%%]*}
-echo $TEXT
+TEXT=\$(cat \$HOME/ngrok.log)
+TEXT=\${TEXT#*[Addr:}
+TEXT=\${TEXT%%]*}
+echo \$TEXT
 EOF
 chmod +x $get_ip_script
 
@@ -43,6 +43,5 @@ mkdir -p $1/.profile.d
 cat <<EOF > $1/.profile.d/000_ngrok.sh
 #!/usr/bin/env bash
 
-#export PATH=\$PATH:$HOME/bin
-alias ngrok=\$HOME/bin/ngrok
+export PATH=\$HOME/bin:$PATH
 EOF
