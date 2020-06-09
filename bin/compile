@@ -43,5 +43,5 @@ mkdir -p $1/.profile.d
 cat <<EOF > $1/.profile.d/000_ngrok.sh
 #!/usr/bin/env bash
 
-export PATH=\$HOME/bin:$PATH
+export PATH=\$HOME/bin:\$PATH
 EOF
