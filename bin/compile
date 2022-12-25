@@ -25,7 +25,7 @@ export_env_dir $3 '^(NGROK_.*)$'
 BP_DIR="$(cd "$(dirname "$0")"/.. && pwd)"
 
 topic Installing ngrok
-curl --silent -o ngrok.zip -L "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip" 
+curl --silent -o ngrok.zip -L "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" 
 mkdir -p $1/bin
 unzip ngrok.zip -d $1/bin > /dev/null 2>&1
 
